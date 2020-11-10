@@ -5,20 +5,20 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
 public class TestXML {
 
-
     //xml파일 읽어오기
-    public HashMap<String,String> selectXML() {
-        final String xmlFile="C:\\Users\\JIHO\\IdeaProjects\\crud_test\\saveInfo.xml";
+    public HashMap<String,String> selectXML(String inPath) {
+//        final String xmlFile="C:\\Users\\JIHO\\IdeaProjects\\crud_test\\saveInfo.xml";
         try {
 
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();//객체 생성을 위한 factory 생성
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
-            Document document = builder.parse(xmlFile);//생성된 builder를 통해 파싱해서 가져옴
+            Document document = builder.parse(inPath);//생성된 builder를 통해 파싱해서 가져옴
             document.getDocumentElement().normalize();//정규화
 
             HashMap<String, String> listMap = new HashMap<String, String>();
@@ -35,7 +35,6 @@ public class TestXML {
 
                 }
             }
-
             return listMap;
         } catch (IOException ie) {
             ie.printStackTrace();
@@ -46,7 +45,7 @@ public class TestXML {
         }catch (SAXException saxe){
             saxe.printStackTrace();
             return null;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
