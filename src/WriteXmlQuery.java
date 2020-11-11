@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class WriteXmlQuery {
-    public void getQuery(String filePath){
+
+    public HashMap<String,String> getQuery(String filePath){
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -27,15 +28,18 @@ public class WriteXmlQuery {
                 System.out.println(sqlNode.item(i).getNodeName()+","+sqlNode.item(i).getTextContent());
                 sqlList.put(sqlNode.item(i).getNodeName(),sqlNode.item(i).getTextContent());
             }
-
+            return sqlList;
 
         }catch (IOException ie){
             System.out.println("파일 읽기 실패~");
             ie.printStackTrace();
+            return null;
         }catch (ParserConfigurationException pce){
             pce.printStackTrace();
+            return null;
         }catch (SAXException se){
             se.printStackTrace();
+            return null;
         }
     }
 }

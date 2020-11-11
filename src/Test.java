@@ -1,43 +1,29 @@
+import java.io.File;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Test {
     //xml파일 가져오기
-    TestXML xml = new TestXML();
-    HashMap<String, String> map = new HashMap<String, String>();
+    WriteXmlQuery query=new WriteXmlQuery();
+    HashMap<String,String> map=new HashMap<String, String>();
 
-    String getTable;
-    String getUserNum;
-    String getUserName;
-    String getUserId;
-    String getUserPwd;
-    String getUserAddr;
-    String getUserPhone;
-    String getUserRegdate;
-
-    public Test(){}
-
-    //getXmlFilePath
-    public Test(String path) {
-        map = xml.selectXML(path);
-        getTable = map.get("testTable");
-        getUserNum = map.get("userNum");
-        getUserName = map.get("userName");
-        getUserId = map.get("userId");
-        getUserPwd = map.get("userPwd");
-        getUserAddr = map.get("userAddr");
-        getUserPhone = map.get("userPhone");
-        getUserRegdate = map.get("userRegdate");
+    //파일 존재여부 확인
+    public Boolean fileCheck(File filePath){
+        //파일 존재여부 확인
+        if(filePath.isFile()){
+            map= query.getQuery(filePath.toString());
+            return true;
+        }else {
+            return false;
+        }
     }
 
-    //insert
+    //1.insert
     public void insert(String name, String id, String pwd, String addr, int phone) {
         Connection con = JDBCConnection.getConnection();
         PreparedStatement psmt = null;
-        String insertSql = "INSERT INTO " + getTable + " VALUES((SELECT IFNUll(max(" + getUserNum + "),0)+1 " +
-                "FROM " + getTable + " AS max_num)," +
-                "?,?,?,?,?,NOW())";
+        String insertSql = map.get("insert");
         try {
             psmt = con.prepareStatement(insertSql);
             psmt.setString(1, name);
@@ -65,19 +51,18 @@ public class Test {
         Connection con = null;
         PreparedStatement psmt = null;
         ResultSet rs = null;
-        String selectSql = "SELECT " + getUserNum + "," + getUserName + ", " + getUserId + ", " + getUserAddr +
-                ", " + getUserPhone + ", " + getUserRegdate + " FROM " + getTable + " ORDER BY " + getUserRegdate + " desc";
+        String selectSql = map.get("select");
         try {
             con = JDBCConnection.getConnection();
             psmt = con.prepareStatement(selectSql);
             rs = psmt.executeQuery();
             while (rs.next()) {
-                int num = rs.getInt(getUserNum);
-                String name = rs.getString(getUserName);
-                String id = rs.getString(getUserId);
-                String addr = rs.getString(getUserAddr);
-                int phone = rs.getInt(getUserPhone);
-                Date regdate = rs.getDate(getUserRegdate);
+                int num = rs.getInt("user_num");
+                String name = rs.getString("user_name");
+                String id = rs.getString("user_id");
+                String addr = rs.getString("user_addr");
+                int phone = rs.getInt("user_phone");
+                Date regdate = rs.getDate("user_regdate");
                 System.out.println("[" + num + "," + id + "," + name + "," + addr + "," +
                         phone + "," + regdate + "]");
             }
@@ -94,8 +79,7 @@ public class Test {
     public void update(int updateNum, String editName, String editAddr, int editPhone) {
         Connection con = JDBCConnection.getConnection();
         PreparedStatement psmt = null;
-        String updateSql = "UPDATE " + getTable + " SET " + getUserName + "=?, " +
-                getUserAddr + "=?, " + getUserPhone + "=? WHERE " + getUserNum + "=?";
+        String updateSql = map.get("update");
         try {
             psmt = con.prepareStatement(updateSql);
             psmt.setString(1, editName);
@@ -119,8 +103,7 @@ public class Test {
     public void delete(int delNum) {
         Connection con = JDBCConnection.getConnection();
         PreparedStatement psmt = null;
-        String deleteSql = "DELETE FROM " + getTable + " WHERE " + getUserNum + "=?";
-        //DELETE FROM test_user_info WHERE user_num =?;
+        String deleteSql = map.get("delete");
         try {
             psmt = con.prepareStatement(deleteSql);
             psmt.setInt(1, delNum);
@@ -134,6 +117,22 @@ public class Test {
             se.printStackTrace();
         } finally {
             JDBCConnection.getClose(con, psmt, null);
+        }
+    }
+
+    //tableCopy
+    public void copyTable(){
+        Connection con=JDBCConnection.getConnection();
+        PreparedStatement psmt=null;
+        String copyTableSql="";
+        try{
+            psmt=con.prepareStatement(copyTableSql);
+            psmt.executeUpdate();
+
+        }catch (SQLException se){
+            se.printStackTrace();
+        }finally {
+            JDBCConnection.getClose(con,psmt,null);
         }
     }
 }
