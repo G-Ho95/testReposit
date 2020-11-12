@@ -23,8 +23,14 @@ public class JDBCConnection {
             if (con != null) con.close();
             if (psmt !=null) psmt.close();
             if (rs != null) rs.close();
-//            System.out.println("종료");
         } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+    public static void getClose(PreparedStatement psmt){
+        try{
+            if(psmt!=null) psmt.close();
+        }catch (SQLException se){
             se.printStackTrace();
         }
     }

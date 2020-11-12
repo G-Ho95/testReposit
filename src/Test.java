@@ -20,7 +20,7 @@ public class Test {
     }
 
     //1.insert
-    public void insert(String name, String id, String pwd, String addr, int phone) {
+    public void insert(String name, String id, String pwd, String addr, String phone) {
         Connection con = JDBCConnection.getConnection();
         PreparedStatement psmt = null;
         String insertSql = map.get("insert");
@@ -30,7 +30,7 @@ public class Test {
             psmt.setString(2, id);
             psmt.setString(3, pwd);
             psmt.setString(4, addr);
-            psmt.setInt(5, phone);
+            psmt.setInt(5, Integer.parseInt(phone));
             int insertResult = psmt.executeUpdate();
             if (insertResult > 0) {
                 System.out.println("ok");
@@ -76,7 +76,7 @@ public class Test {
     }
 
     //update
-    public void update(int updateNum, String editName, String editAddr, int editPhone) {
+    public void update(String updateNum, String editName, String editAddr, String editPhone) {
         Connection con = JDBCConnection.getConnection();
         PreparedStatement psmt = null;
         String updateSql = map.get("update");
@@ -84,8 +84,8 @@ public class Test {
             psmt = con.prepareStatement(updateSql);
             psmt.setString(1, editName);
             psmt.setString(2, editAddr);
-            psmt.setInt(3, editPhone);
-            psmt.setInt(4, updateNum);
+            psmt.setInt(3, Integer.parseInt(editPhone));
+            psmt.setInt(4, Integer.parseInt(updateNum));
             int updateResult = psmt.executeUpdate();
             if (updateResult > 0) {
                 System.out.println("ok");
@@ -123,16 +123,28 @@ public class Test {
     //tableCopy
     public void copyTable(){
         Connection con=JDBCConnection.getConnection();
-        PreparedStatement psmt=null;
-        String copyTableSql="";
+        PreparedStatement psmtDel=null;
+        PreparedStatement psmtCopy=null;
+        String deleteDataSql=map.get("deleteData");
+        String copyData=map.get("copyData");
         try{
-            psmt=con.prepareStatement(copyTableSql);
-            psmt.executeUpdate();
-
+            con.setAutoCommit(false);
+            psmtDel=con.prepareStatement(deleteDataSql);
+            psmtDel.executeUpdate();
+            psmtCopy=con.prepareStatement(copyData);
+            psmtCopy.executeUpdate();
+            con.commit();
+            System.out.println("연동완료");
         }catch (SQLException se){
+            try {
+                con.rollback();
+            }catch (SQLException sqle){
+                sqle.printStackTrace();
+            }
             se.printStackTrace();
         }finally {
-            JDBCConnection.getClose(con,psmt,null);
+            JDBCConnection.getClose(psmtCopy);
+            JDBCConnection.getClose(con,psmtDel,null);
         }
     }
 }

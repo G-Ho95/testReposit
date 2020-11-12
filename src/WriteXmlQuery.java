@@ -18,20 +18,20 @@ public class WriteXmlQuery {
             document.getDocumentElement().normalize();
 
             NodeList rootNode=document.getElementsByTagName("sql");
-            System.out.println("dddd:"+rootNode.item(0).getChildNodes().getLength());
+//            System.out.println("dddd:"+rootNode.item(0).getChildNodes().getLength());
             NodeList sqlNode=rootNode.item(0).getChildNodes();
 
             HashMap<String,String> sqlList=new HashMap<String,String>();
 
             for(int i=0;i<sqlNode.getLength();i++){
                 if(sqlNode.item(i).getNodeName().equals("#text")) continue;
-                System.out.println(sqlNode.item(i).getNodeName()+","+sqlNode.item(i).getTextContent());
+//                System.out.println(sqlNode.item(i).getNodeName()+","+sqlNode.item(i).getTextContent());
                 sqlList.put(sqlNode.item(i).getNodeName(),sqlNode.item(i).getTextContent());
             }
             return sqlList;
 
         }catch (IOException ie){
-            System.out.println("파일 읽기 실패~");
+            System.out.println("dddd");
             ie.printStackTrace();
             return null;
         }catch (ParserConfigurationException pce){
