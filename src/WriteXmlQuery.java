@@ -6,11 +6,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 
 public class WriteXmlQuery {
 
-    public HashMap<String,String> getQuery(String filePath){
+    public HashMap<String,String> getQuery(String filePath) throws MalformedURLException, IOException{
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -23,7 +24,7 @@ public class WriteXmlQuery {
 
             HashMap<String,String> sqlList=new HashMap<String,String>();
 
-            for(int i=0;i<sqlNode.getLength();i++){
+            for (int i=0; i<sqlNode.getLength(); i++) {
                 if(sqlNode.item(i).getNodeName().equals("#text")) continue;
 //                System.out.println(sqlNode.item(i).getNodeName()+","+sqlNode.item(i).getTextContent());
                 sqlList.put(sqlNode.item(i).getNodeName(),sqlNode.item(i).getTextContent());
@@ -31,13 +32,13 @@ public class WriteXmlQuery {
             return sqlList;
 
         }catch (IOException ie){
-            System.out.println("dddd");
+//            System.out.println("dddd");
             ie.printStackTrace();
             return null;
         }catch (ParserConfigurationException pce){
             pce.printStackTrace();
             return null;
-        }catch (SAXException se){
+        } catch (SAXException se){
             se.printStackTrace();
             return null;
         }

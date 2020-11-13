@@ -27,6 +27,7 @@ public class JDBCConnection {
             se.printStackTrace();
         }
     }
+
     public static void getClose(PreparedStatement psmt){
         try{
             if(psmt!=null) psmt.close();

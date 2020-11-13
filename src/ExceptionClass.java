@@ -1,9 +1,9 @@
 import java.util.regex.Pattern;
 
 public class ExceptionClass {
-    final String number = "^[0-9]*$"; //숫자만 입력
-    final String kr = "^[가-힣]*$"; //한글만 입력
-    final String eng = "^[a-z]*$";//영소문자만 입력
+    final String number = "^[0-9]*$";  //숫자만 입력
+    final String kr     = "^[가-힣]*$"; //한글만 입력
+    final String eng    = "^[a-z]*$";  //영소문자만 입력
 
 
     //숫자만 입력
@@ -12,7 +12,7 @@ public class ExceptionClass {
     }
 
     //insert 유효성 검사
-    public StringBuffer insertCheck(String name, String id, String pwd, String addr, String phone) {
+    public StringBuffer insertCheck(String name, String id, String pwd, String addr, String phone) throws Exception {
         StringBuffer msg = new StringBuffer();
         if (!(Pattern.matches(kr, name)) || !(name.length() >= 2 || name.length() <= 4)) {
             //이름검사:한글만,2~4자리
